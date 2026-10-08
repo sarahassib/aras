@@ -10,7 +10,7 @@ import { validateCoupon, type CouponInvalidReason } from "./coupons";
 import { computeTotals, type CartTotals } from "./pricing";
 import { getSettings } from "./settings";
 
-const GUEST_CART_COOKIE = "aras_cart";
+export const GUEST_CART_COOKIE = "aras_cart";
 
 export interface CartContext {
   userId?: string | null;

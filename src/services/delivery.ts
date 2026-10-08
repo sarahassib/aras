@@ -123,6 +123,42 @@ export async function upsertDeliveryZone(
   };
 }
 
+export async function updateDeliveryZone(
+  id: string,
+  input: DeliveryZoneInput,
+): Promise<DeliveryZoneDTO> {
+  const existing = await db.deliveryZone.findUnique({ where: { id } });
+  if (!existing) throw new Error("Delivery zone not found");
+
+  if (input.isDefault) {
+    await db.deliveryZone.updateMany({ data: { isDefault: false }, where: { NOT: { id } } });
+  }
+
+  const city = input.city.trim();
+  const clash = await db.deliveryZone.findFirst({ where: { city, NOT: { id } } });
+  if (clash) throw new Error(`A zone for "${city}" already exists`);
+
+  const zone = await db.deliveryZone.update({
+    where: { id },
+    data: {
+      city,
+      fee: input.feeMinor,
+      active: input.active ?? existing.active,
+      isDefault: input.isDefault ?? existing.isDefault,
+      sortOrder: input.sortOrder ?? existing.sortOrder,
+    },
+  });
+
+  return {
+    id: zone.id,
+    city: zone.city,
+    feeMinor: zone.fee,
+    active: zone.active,
+    isDefault: zone.isDefault,
+    sortOrder: zone.sortOrder,
+  };
+}
+
 export async function deleteDeliveryZone(id: string): Promise<void> {
   const zone = await db.deliveryZone.findUnique({ where: { id } });
   if (!zone) return;

@@ -9,7 +9,8 @@ import type { StorageProvider, UploadInput, UploadedFile } from "./types";
  */
 export function createLocalStorage(baseDir?: string): StorageProvider {
   const root =
-    baseDir ?? path.join(process.cwd(), ".data", "uploads");
+    baseDir ??
+    path.join(/*turbopackIgnore: true*/ process.cwd(), ".data", "uploads");
 
   return {
     name: "local",

@@ -4,6 +4,7 @@ import { listProductsAdmin } from "@/services/products-admin";
 import { formatMAD } from "@/lib/money";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
+import { StockInput } from "@/components/admin/stock-input";
 import { Package, Plus } from "lucide-react";
 
 export const metadata: Metadata = { title: "Products" };
@@ -167,7 +168,13 @@ export default async function AdminProductsPage({
                     </p>
                   )}
                 </TableCell>
-                <TableCell className="text-end text-sm font-semibold">{product.stock}</TableCell>
+                <TableCell className="text-end text-sm font-semibold">
+                  <StockInput
+                    productId={product.id}
+                    stock={product.stock}
+                    variantCount={product.variantCount}
+                  />
+                </TableCell>
                 <TableCell className="text-end text-sm text-muted-foreground">{product.salesCount}</TableCell>
               </TableRow>
             ))}

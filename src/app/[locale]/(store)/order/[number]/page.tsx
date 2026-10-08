@@ -150,7 +150,7 @@ export default async function OrderPage({
 
           <div className="mt-7 flex flex-wrap justify-center gap-3">
             <Link
-              href="/catalog"
+              href="/"
               className="rounded-full bg-navy-950 px-6 py-2.5 text-sm font-semibold text-white hover:bg-navy-800"
             >
               {tc("goHome")}

@@ -40,7 +40,7 @@ export function computeCouponDiscount(
 
   const raw =
     coupon.type === "PERCENT"
-      ? applyPercentOff(subtotalMinor, coupon.value)
+      ? subtotalMinor - applyPercentOff(subtotalMinor, coupon.value)
       : Math.min(coupon.value, subtotalMinor);
 
   return Math.max(0, Math.min(raw, subtotalMinor));

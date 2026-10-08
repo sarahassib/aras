@@ -14,8 +14,13 @@ const CART_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
  * Resolves the cart identity for the current request:
  *  - signed-in user → their cart (guest cart from before login is merged in)
  *  - guest → token cart, minting + setting the cookie on first use
+ *
+ * Pass `{ mint: false }` when reading from a server component (cookies can only
+ * be written from a route handler / server action); an unknown guest then gets
+ * an anonymous context instead of a thrown error.
  */
-export async function getCartContext(): Promise<CartContext> {
+export async function getCartContext(options: { mint?: boolean } = {}): Promise<CartContext> {
+  const { mint = true } = options;
   const [user, store] = await Promise.all([getSessionUser(), cookies()]);
   const token = store.get(GUEST_CART_COOKIE)?.value ?? null;
 
@@ -29,6 +34,7 @@ export async function getCartContext(): Promise<CartContext> {
   }
 
   if (token) return { token };
+  if (!mint) return {};
 
   const newToken = generateCartToken();
   store.set(GUEST_CART_COOKIE, newToken, {

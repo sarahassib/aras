@@ -216,7 +216,8 @@
     "checkoutSecure": "Secure checkout",
     "removeConfirm": "Remove this item?",
     "qtyLabel": "Quantity for {name}",
-    "updateError": "Could not update the item"
+    "updateError": "Could not update the item",
+    "orderSummaryLabel": "Summary"
   },
   "checkout": {
     "title": "Checkout",

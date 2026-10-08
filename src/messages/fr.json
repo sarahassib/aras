@@ -216,7 +216,8 @@
     "checkoutSecure": "Commande sécurisée",
     "removeConfirm": "Retirer cet article ?",
     "qtyLabel": "Quantité pour {name}",
-    "updateError": "Impossible de mettre à jour l'article"
+    "updateError": "Impossible de mettre à jour l'article",
+    "orderSummaryLabel": "Récapitulatif"
   },
   "checkout": {
     "title": "Finaliser la commande",

@@ -216,7 +216,8 @@
     "checkoutSecure": "طلب آمن",
     "removeConfirm": "إزالة هذا المنتج؟",
     "qtyLabel": "كمية {name}",
-    "updateError": "تعذر تحديث المنتج"
+    "updateError": "تعذر تحديث المنتج",
+    "orderSummaryLabel": "ملخص الطلب"
   },
   "checkout": {
     "title": "إتمام الطلب",

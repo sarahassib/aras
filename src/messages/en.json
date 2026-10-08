@@ -296,7 +296,8 @@
     "myOrders": "My orders",
     "orderNumber": "Order number",
     "date": "Date",
-    "empty": "You have no orders yet."
+    "empty": "You have no orders yet.",
+    "statusLabel": "Status"
   },
   "auth": {
     "loginTitle": "Welcome back",

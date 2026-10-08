@@ -1,0 +1,15 @@
+
+> aras@1.0.0 dev
+> next dev
+
+▲ Next.js 16.4.0 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.56.1:3000
+- Environments: .env
+✓ Ready in 1068ms
+✓ Running next.config.ts took 151ms
+[email-worker] started
+
+ GET /fr 200 in 5.9s (next.js: 1554ms, proxy.ts: 298ms, generate-params: 1159ms, application-code: 2.9s)
+ GET /ar 200 in 1509ms (next.js: 86ms, proxy.ts: 11ms, generate-params: 9ms, application-code: 1404ms)
+ GET /en 200 in 1450ms (next.js: 13ms, proxy.ts: 12ms, generate-params: 8ms, application-code: 1417ms)

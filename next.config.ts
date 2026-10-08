@@ -23,6 +23,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   cacheComponents: false,
   turbopack: {
+    root: process.cwd(),
     rules: {
       "*.css": {
         loaders: ["@tailwindcss/turbopack"],
@@ -57,4 +58,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

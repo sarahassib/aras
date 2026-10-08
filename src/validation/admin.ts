@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { moneyMinorSchema, idSchema, nameSchema, emailSchema } from "./common";
+import { moneyMinorSchema, idSchema, emailSchema } from "./common";
 
 // ── Coupons ───────────────────────────────────────────────────
 

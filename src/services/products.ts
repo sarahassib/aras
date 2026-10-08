@@ -2,7 +2,6 @@ import { db } from "@/lib/db";
 import type { Locale } from "@/lib/business-rules";
 import type { ProductStatus } from "@/generated/prisma/client";
 import { localizedName, localizedDescription } from "@/lib/localized";
-import { discountPercent } from "@/lib/money";
 import { resolveSalePrice } from "./pricing";
 import { getCategoryBySlug, getSubcategoryBySlug } from "./categories";
 

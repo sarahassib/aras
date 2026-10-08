@@ -1,5 +1,4 @@
 import type { Locale } from "@/lib/business-rules";
-import type { PaymentMethod } from "@/generated/prisma/client";
 
 export interface CheckoutRequest {
   orderId: string;

@@ -20,10 +20,6 @@ export interface DeliveryZoneDTO {
   sortOrder: number;
 }
 
-interface SettingsLike {
-  freeShippingThreshold: number;
-}
-
 async function getThreshold(): Promise<number> {
   const settings = await db.storeSetting.findFirst({
     select: { freeShippingThreshold: true },

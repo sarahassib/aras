@@ -39,6 +39,7 @@ export function CartView() {
   }, [locale]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- initial fetch resolves asynchronously
     load();
   }, [load]);
 

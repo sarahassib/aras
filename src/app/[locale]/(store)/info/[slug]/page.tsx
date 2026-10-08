@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 
 type Content = { title: string; body: string[] };
 
@@ -209,9 +210,9 @@ export default async function InfoPage({
           ))}
         </div>
         <p className="mt-10 text-sm">
-          <a href="/" className="font-medium text-gold-600 hover:underline">
+          <Link href="/" className="font-medium text-gold-600 hover:underline">
             ← {t("goHome")}
-          </a>
+          </Link>
         </p>
       </div>
     </div>

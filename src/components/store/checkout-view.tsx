@@ -37,7 +37,7 @@ export function CheckoutView({ cart, zones, codEnabled, cardEnabled, locale }: P
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
     codEnabled ? "COD" : "CARD",
   );
-  const [quote, setQuote] = useState<DeliveryQuote | null>(null);
+  const [quote, setQuote] = useState<(DeliveryQuote & { key: string }) | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -47,20 +47,20 @@ export function CheckoutView({ cart, zones, codEnabled, cardEnabled, locale }: P
     [cart.subtotalMinor, cart.couponDiscountMinor],
   );
 
+  const quoteKey = `${city.trim()}|${afterCoupon}`;
+
   useEffect(() => {
-    if (!city) {
-      setQuote(null);
-      return;
-    }
+    const cityQuery = city.trim();
+    if (!cityQuery) return;
     let cancelled = false;
     const timer = setTimeout(async () => {
       try {
         const res = await fetch(
-          `/api/delivery/quote?city=${encodeURIComponent(city)}&subtotal=${afterCoupon}`,
+          `/api/delivery/quote?city=${encodeURIComponent(cityQuery)}&subtotal=${afterCoupon}`,
         );
         if (!res.ok) return;
         const data = (await res.json()) as DeliveryQuote;
-        if (!cancelled) setQuote(data);
+        if (!cancelled) setQuote({ ...data, key: `${cityQuery}|${afterCoupon}` });
       } catch {
         /* ignore */
       }
@@ -71,7 +71,8 @@ export function CheckoutView({ cart, zones, codEnabled, cardEnabled, locale }: P
     };
   }, [city, afterCoupon]);
 
-  const deliveryFee = quote?.feeMinor ?? 0;
+  const activeQuote = quote && quote.key === quoteKey ? quote : null;
+  const deliveryFee = activeQuote?.feeMinor ?? 0;
   const totalMinor = afterCoupon + deliveryFee;
 
   const validate = (): boolean => {
@@ -278,10 +279,10 @@ export function CheckoutView({ cart, zones, codEnabled, cardEnabled, locale }: P
           <div className="flex justify-between">
             <dt className="text-muted-foreground">{tc("shipping")}</dt>
             <dd>
-              {quote
-                ? quote.feeMinor === 0
+              {activeQuote
+                ? activeQuote.feeMinor === 0
                   ? tc("shippingFree")
-                  : formatMAD(quote.feeMinor)
+                  : formatMAD(activeQuote.feeMinor)
                 : city
                   ? "…"
                   : tc("shippingCalculated")}

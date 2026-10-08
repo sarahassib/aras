@@ -130,6 +130,7 @@ export default async function AdminProductsPage({
                     aria-label={`Edit ${product.name}`}
                   >
                     {product.image ? (
+                      // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={product.image}
                         alt=""

@@ -9,7 +9,7 @@ import type { CheckoutRequest, CheckoutResponse, PaymentProvider, WebhookVerific
 export const codProvider: PaymentProvider = {
   name: "COD",
   supportsRedirect: false,
-  async createCheckout(request: CheckoutRequest): Promise<CheckoutResponse> {
+  async createCheckout(): Promise<CheckoutResponse> {
     return { provider: "COD", checkoutUrl: null, providerReference: null };
   },
 };

@@ -25,11 +25,7 @@ export function SearchBar({ className }: { className?: string }) {
 
   useEffect(() => {
     const query = q.trim();
-    if (query.length < 2) {
-      setItems([]);
-      setOpen(false);
-      return;
-    }
+    if (query.length < 2) return;
     const controller = new AbortController();
     const timer = setTimeout(async () => {
       try {
@@ -50,6 +46,8 @@ export function SearchBar({ className }: { className?: string }) {
       controller.abort();
     };
   }, [q, locale]);
+
+  const query = q.trim();
 
   return (
     <div className={`relative ${className ?? ""}`}>
@@ -74,7 +72,7 @@ export function SearchBar({ className }: { className?: string }) {
         </Button>
       </form>
 
-      {open && items.length > 0 && (
+      {open && query.length >= 2 && items.length > 0 && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
           <ul className="absolute end-0 top-full z-50 mt-1 w-full min-w-72 overflow-hidden rounded-lg border bg-popover shadow-lg">

@@ -18,7 +18,7 @@ export function toMajor(minor: number): number {
 export function parseAmountToMinor(input: string): number {
   const normalized = input
     .replace(/[^\d.,-]/g, "")
-    .replace(/\s/g, "")
+    .replace(/(\d),(?=\d{3}(\D|$))/g, "$1")
     .replace(",", ".");
   const value = Number.parseFloat(normalized);
   if (Number.isNaN(value) || value < 0) {

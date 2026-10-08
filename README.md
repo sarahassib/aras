@@ -1,36 +1,140 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ARAS — Moroccan e-commerce platform
 
-## Getting Started
+ARAS is a production-ready online store for Morocco: trilingual storefront (FR / AR / EN with RTL),
+cash-on-delivery first (card payments through a hosted-checkout gateway), and a full English admin
+dashboard.
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router, Turbopack) + **React 19** + **TypeScript** (strict)
+- **Tailwind CSS v4** + **shadcn/ui** + lucide-react
+- **Prisma 7** on PostgreSQL (client generated to `src/generated/prisma`)
+- **better-auth** (credentials, DB sessions, roles: `ADMIN` / `CUSTOMER`)
+- **next-intl** for FR/AR/EN, **zod** for validation, **react-hook-form**, **recharts**, **sonner**
+- **Vitest** for tests
+
+## Features
+
+**Storefront** (`/[locale]`, locales `fr` `ar` `en`, default `fr`)
+- Home (hero banners, category grid, featured / new / best-sellers / promos)
+- Catalog with search, category & facet filters, sorting, pagination
+- Product pages: gallery, variant/option picker, stock-aware add to cart, reviews, related products
+- Cart with quantity control, coupon codes, live totals
+- Checkout: contact → delivery (zone-based quote, free shipping ≥ 500 DH) → payment (COD / card) → order confirmation
+- Order tracking by order number, customer account (profile + order history)
+- Newsletter subscription, localized footer pages (delivery, returns, FAQ, terms, privacy)
+
+**Admin** (`/admin`, English, role-protected)
+- Dashboard: KPIs, 30-day sales chart, order status mix, recent orders, top products, low stock
+- Orders: filters/search, status transitions with history + automatic e-mails, internal notes, resend e-mail
+- Products: list, create/edit (translations, images, options/variants, stock, flags), delete
+- Categories & subcategories (translations, ordering), promotions, coupons
+- Banners (hero/middle/footer), delivery zones, reviews, newsletter subscribers
+- Store settings: identity, contact, payment toggles, free-shipping threshold, announcements, social, SEO
+
+**Platform**
+- 37 JSON API routes under `/api` (admin, cart, catalog, checkout, newsletter, reviews, files, auth…)
+- Service layer in `src/services` shared by pages, API routes and server actions
+- Money as integer centimes everywhere (`src/lib/money.ts`)
+- E-mail outbox (`EmailOutbox`) + background worker started from `src/instrumentation.ts`
+- Rate limiting, security headers, strict zod validation
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 1. PostgreSQL (Docker example)
+docker run -d --name aras-postgres -e POSTGRES_USER=aras -e POSTGRES_PASSWORD=aras_dev_password \
+  -e POSTGRES_DB=aras -p 5432:5432 postgres:16
+
+# 2. Environment
+cp .env.example .env    # then fill DATABASE_URL, BETTER_AUTH_SECRET, BETTER_AUTH_URL
+
+# 3. Install & database
+npm install             # runs `prisma generate` via postinstall
+npm run db:migrate      # apply migrations
+npm run db:seed         # demo catalog, settings, test accounts
+
+# 4. Develop
+npm run dev             # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Development server |
+| `npm run build` | Production build |
+| `npm run start` | Serve the production build |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm test` | Vitest suite |
+| `npm run db:migrate` | Create/apply Prisma migrations |
+| `npm run db:deploy` | Apply migrations (production) |
+| `npm run db:seed` | Idempotent demo data |
+| `npm run postinstall` | Regenerate the Prisma client |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Seed accounts
 
-## Learn More
+| Role | Email | Password |
+| --- | --- | --- |
+| Admin | `admin@aras.ma` | `ArasAdmin1!` |
+| Customer | `client@aras.ma` | `ArasClient1!` |
 
-To learn more about Next.js, take a look at the following resources:
+Demo coupons: `BIENVENUE10` (−10 %, min 300 DH), `LIVRAISON50` (−50 DH, min 400 DH),
+`RAMADAN25` (−25 %, min 500 DH).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/
+│   ├── [locale]/           # storefront: (store) pages, auth, account, order tracking
+│   ├── admin/              # login + (dashboard) admin UI (English)
+│   └── api/                # JSON routes (admin/*, cart, checkout, newsletter, …)
+├── components/
+│   ├── store/              # storefront components
+│   ├── admin/              # admin components
+│   └── ui/                 # shadcn/ui primitives
+├── services/               # business logic shared by pages, API and actions
+├── validation/             # zod schemas (common, catalog, admin)
+├── lib/                    # auth, session, db, money, business-rules, errors, api
+├── i18n/                   # next-intl routing/request/navigation helpers
+├── messages/               # fr.json, ar.json, en.json (identical key sets)
+└── generated/prisma/       # generated Prisma client (do not edit)
+prisma/                     # schema.prisma, migrations/, seed.ts
+tests/                      # vitest suites (money, pricing, business rules, validation)
+```
 
-## Deploy on Vercel
+## Conventions
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Money** is always an integer number of centimes; format with `formatMAD`, parse with
+  `parseAmountToMinor`. Never use floats for prices.
+- **i18n**: every static `t("…")` key must exist in `src/messages/{fr,ar,en}.json` — verify with
+  `node scripts/audit-messages.mjs`.
+- **API**: success responses return the payload directly (`ok(data)`), errors return
+  `{ error: { code, message, issues } }`.
+- **Auth**: pages use `requireAdminPage` / `requireUserPage`, server actions and API routes use
+  `requireAdmin()`.
+- **Order lifecycle**: statuses only change through `canTransition` (`ORDER_STATUS_TRANSITIONS`);
+  each change writes history and queues the matching customer e-mail.
+- Run `npm run typecheck`, `npm test` and `node scripts/audit-messages.mjs` before committing.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Tests
+
+```bash
+npm test          # money helpers, coupon/total pricing (incl. discount regression), 
+                  # order transitions, free-shipping rule, validation schemas
+```
+
+Integration tests can use `TEST_DATABASE_URL` (a separate database) — see `.env.example`.
+
+## Payment setup
+
+Card payments are disabled by default (`cardEnabled: false`). To enable them, fill in
+`PAYMENT_PROVIDER`, `PAYMENT_PROVIDER_KEY`, `PAYMENT_PROVIDER_SECRET` and `PAYMENT_CHECKOUT_URL`
+for your gateway (CMI, PayZone, Wafacash PayZone, Alma…). ARAS never handles raw card data — the
+checkout redirects to the provider's hosted page and `/api/payments/webhook` reconciles the result.
+
+## License
+
+Private — all rights reserved.

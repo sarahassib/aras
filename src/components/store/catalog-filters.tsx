@@ -30,7 +30,6 @@ export async function CatalogFilters({
 }: Props) {
   const t = await getTranslations({ locale, namespace: "catalog" });
 
-  const category = categories.find((c) => c.slug === activeCategory);
   const currentSizes = searchParams.size ?? [];
   const currentColors = searchParams.color ?? [];
   const sizeList = (Array.isArray(currentSizes) ? currentSizes : [currentSizes]).filter(Boolean);

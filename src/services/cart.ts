@@ -54,19 +54,43 @@ export function generateCartToken(): string {
 
 export async function getOrCreateCart(context: CartContext) {
   if (context.userId) {
-    const existing = await db.cart.findUnique({ where: { userId: context.userId } });
+    const userId = context.userId;
+    const existing = await db.cart.findUnique({ where: { userId } });
     if (existing) return existing;
-    return db.cart.create({ data: { userId: context.userId } });
+    return createCartUnique(() => db.cart.findUnique({ where: { userId } }), { userId });
   }
 
   if (context.token) {
-    const existing = await db.cart.findUnique({ where: { token: context.token } });
+    const token = context.token;
+    const existing = await db.cart.findUnique({ where: { token } });
     if (existing) return existing;
-    return db.cart.create({ data: { token: context.token } });
+    return createCartUnique(() => db.cart.findUnique({ where: { token } }), { token });
   }
 
   // No identity yet — create an anonymous cart the caller can persist as a cookie.
   return db.cart.create({ data: { token: generateCartToken() } });
+}
+
+/** Concurrent requests can race the unique constraint — retry the lookup once. */
+type CartRow = Awaited<ReturnType<typeof db.cart.create>>;
+
+async function createCartUnique(
+  findExisting: () => Promise<CartRow | null>,
+  data: Parameters<typeof db.cart.create>[0]["data"],
+): Promise<CartRow> {
+  try {
+    return await db.cart.create({ data });
+  } catch (error) {
+    if (isUniqueViolation(error)) {
+      const existing = await findExisting();
+      if (existing) return existing;
+    }
+    throw error;
+  }
+}
+
+function isUniqueViolation(error: unknown): boolean {
+  return typeof error === "object" && error !== null && (error as { code?: string }).code === "P2002";
 }
 
 async function loadCartOrFail(context: CartContext) {

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { authClient } from "@/lib/auth-client";
@@ -9,10 +10,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 
-export function AuthForm({ mode }: { mode: "login" | "register" }) {
+function safeCallback(value: string | null, fallback: string): string {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) return fallback;
+  return value;
+}
+
+function AuthFormInner({ mode }: { mode: "login" | "register" }) {
   const t = useTranslations("auth");
   const tc = useTranslations("common");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = safeCallback(searchParams.get("callbackUrl"), "/account");
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -22,7 +30,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
 
   useEffect(() => {
     authClient.getSession().then((res) => {
-      if (res.data?.user) router.replace("/account");
+      if (res.data?.user) router.replace(callbackUrl);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -52,7 +60,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
         }
         return;
       }
-      router.replace(mode === "login" ? "/account" : "/");
+      router.replace(mode === "login" ? callbackUrl : "/");
       router.refresh();
     } catch {
       setError(tc("error"));
@@ -128,5 +136,13 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
         </Link>
       </p>
     </form>
+  );
+}
+
+export function AuthForm(props: { mode: "login" | "register" }) {
+  return (
+    <Suspense fallback={null}>
+      <AuthFormInner {...props} />
+    </Suspense>
   );
 }

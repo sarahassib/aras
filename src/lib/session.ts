@@ -41,7 +41,7 @@ export async function requireAdmin(): Promise<AppUser> {
 export async function requireAdminPage(callbackPath = "/admin"): Promise<AppUser> {
   const user = await getSessionUser();
   if (!user) {
-    redirect(`/login?callbackUrl=${encodeURIComponent(callbackPath)}`);
+    redirect(`/admin/login?callbackUrl=${encodeURIComponent(callbackPath)}`);
   }
   if (user.role !== "ADMIN") {
     redirect("/");
@@ -52,7 +52,9 @@ export async function requireAdminPage(callbackPath = "/admin"): Promise<AppUser
 export async function requireUserPage(callbackPath = "/account"): Promise<AppUser> {
   const user = await getSessionUser();
   if (!user) {
-    redirect(`/login?callbackUrl=${encodeURIComponent(callbackPath)}`);
+    const { getLocale } = await import("next-intl/server");
+    const locale = await getLocale();
+    redirect(`/${locale}/auth/login?callbackUrl=${encodeURIComponent(callbackPath)}`);
   }
   return user;
 }

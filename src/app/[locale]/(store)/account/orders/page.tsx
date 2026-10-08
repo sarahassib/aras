@@ -29,7 +29,7 @@ export default async function AccountOrdersPage({
 
   const t = await getTranslations({ locale, namespace: "order" });
   const tc = await getTranslations({ locale, namespace: "common" });
-  const user = await requireUserPage("/auth/login");
+  const user = await requireUserPage("/account/orders");
   const result = await listCustomerOrders(user.id, page, 12);
 
   return (

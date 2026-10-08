@@ -27,7 +27,7 @@ export default async function AccountPage({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "account" });
   const to = await getTranslations({ locale, namespace: "order" });
-  const user = await requireUserPage("/auth/login");
+  const user = await requireUserPage("/account");
   const recent = await listCustomerOrders(user.id, 1, 5);
 
   return (

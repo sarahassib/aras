@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import Link from "next/link";
 import { AdminLoginForm } from "@/components/admin/admin-login-form";
 
 export const metadata: Metadata = { title: "Sign in", robots: { index: false } };
@@ -23,9 +24,9 @@ export default function AdminLoginPage() {
           </Suspense>
         </div>
         <p className="mt-6 text-center text-xs text-slate-400">
-          <a href="/" className="hover:text-white">
+          <Link href="/" className="hover:text-white">
             ← Back to store
-          </a>
+          </Link>
         </p>
       </div>
     </div>

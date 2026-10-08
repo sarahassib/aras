@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
@@ -66,7 +67,7 @@ function NavList({ pathname, onNavigate }: { pathname: string; onNavigate?: () =
               const Icon = item.icon;
               return (
                 <li key={item.href}>
-                  <a
+                  <Link
                     href={item.href}
                     onClick={onNavigate}
                     className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
@@ -77,7 +78,7 @@ function NavList({ pathname, onNavigate }: { pathname: string; onNavigate?: () =
                   >
                     <Icon className="size-4 shrink-0" />
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               );
             })}
@@ -165,13 +166,13 @@ export function AdminChrome({
 
       <div className="md:ps-64">
         <header className="hidden h-16 items-center justify-between border-b bg-white px-6 md:flex">
-          <a
+          <Link
             href="/"
             className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
           >
             <Store className="size-4" />
             View storefront
-          </a>
+          </Link>
           <div className="flex items-center gap-3 text-sm">
             <span className="flex size-8 items-center justify-center rounded-full bg-navy-950 font-semibold text-gold-400">
               {(user.name ?? user.email).slice(0, 1).toUpperCase()}

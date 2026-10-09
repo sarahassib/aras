@@ -131,9 +131,21 @@ Integration tests can use `TEST_DATABASE_URL` (a separate database) — see `.en
 ## Payment setup
 
 Card payments are disabled by default (`cardEnabled: false`). To enable them, fill in
-`PAYMENT_PROVIDER`, `PAYMENT_PROVIDER_KEY`, `PAYMENT_PROVIDER_SECRET` and `PAYMENT_CHECKOUT_URL`
+`PAYMENT_PROVIDER_URL`, `PAYMENT_PROVIDER_ID` and `PAYMENT_WEBHOOK_SECRET`
 for your gateway (CMI, PayZone, Wafacash PayZone, Alma…). ARAS never handles raw card data — the
 checkout redirects to the provider's hosted page and `/api/payments/webhook` reconciles the result.
+
+## Deployment
+
+Production: **https://aras-xi.vercel.app** (Vercel, Next.js 16 on Vercel build pipeline).
+
+- Database: Neon (Postgres) via the Vercel Marketplace integration — `DATABASE_URL` is injected
+  automatically into Production/Preview/Development.
+- Other required env vars (see `.env.example`): `BETTER_AUTH_SECRET`, `NEXT_PUBLIC_APP_URL`,
+  `BETTER_AUTH_URL`, `EMAIL_PROVIDER`, `EMAIL_FROM`.
+- Migrations: `npx prisma migrate deploy` (run against the production URL before/while deploying).
+- Local dev keeps using the local Docker Postgres — delete any `.env.local` written by
+  `vercel link`/`vercel env pull` if you don't want the cloud database locally.
 
 ## License
 

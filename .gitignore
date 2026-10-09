@@ -53,3 +53,8 @@ dev.log
 *.log
 .vercel
 .env*
+
+# local tool artifacts
+.agents/
+skills-lock.json
+aras/

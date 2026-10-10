@@ -35,9 +35,18 @@ export async function SiteHeader({ locale }: { locale: string }) {
         </div>
 
         <Link href="/" className="flex shrink-0 items-center gap-2" aria-label={tc("brand")}>
-          <span className="heading-display text-2xl font-bold tracking-tight text-navy-950">
-            {tc("brand")}
-          </span>
+          {settings.logoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={settings.logoUrl}
+              alt={tc("brand")}
+              className="h-9 w-auto md:h-11"
+            />
+          ) : (
+            <span className="heading-display text-2xl font-bold tracking-tight text-navy-950">
+              {tc("brand")}
+            </span>
+          )}
           <span className="hidden h-4 w-px bg-gold-500 sm:block" />
           <span className="hidden text-xs text-muted-foreground sm:block">{tc("tagline")}</span>
         </Link>

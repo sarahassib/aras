@@ -27,7 +27,12 @@ export async function SiteFooter({ locale }: { locale: string }) {
     <footer className="mt-auto bg-navy-950 text-navy-200">
       <div className="container-store grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-4">
         <div>
-          <p className="heading-display text-2xl font-bold text-white">ARAS</p>
+          {settings.logoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={settings.logoUrl} alt="ARAS" className="h-10 w-auto" />
+          ) : (
+            <p className="heading-display text-2xl font-bold text-white">ARAS</p>
+          )}
           <p className="mt-3 text-sm leading-relaxed text-navy-300">{t("aboutText")}</p>
           <div className="mt-5 space-y-2 text-sm text-navy-300">
             <p className="flex items-center gap-2">

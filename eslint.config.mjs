@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Local artifacts (nested clone, vendor agent skills):
+    "aras/**",
+    ".agents/**",
   ]),
 ]);
 

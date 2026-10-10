@@ -110,7 +110,7 @@ export function SettingsForm({ initial }: { initial: Raw }) {
           <Input
             value={form.logoUrl ?? ""}
             onChange={(e) => set("logoUrl", e.target.value)}
-            placeholder="/logo.svg"
+            placeholder="/images/logo.png"
           />
         </Field>
         <Field label="Currency">

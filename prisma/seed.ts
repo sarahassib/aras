@@ -520,7 +520,7 @@ async function main() {
       await db.storeSetting.create({
         data: {
           storeName: "ARAS",
-          logoUrl: "/logo.svg",
+          logoUrl: "/images/logo.png",
           contactEmail: "contact@aras.ma",
           phone: "+212 522 47 88 99",
           whatsapp: "+212 661 23 45 67",
